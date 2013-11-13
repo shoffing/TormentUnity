@@ -2,7 +2,7 @@
 
 static var SPEED : float = 8;
 static var JUMPSPEED : float = 6;
-static var SLOPE_THRESHOLD : = 0.7;
+static var SLOPE_THRESHOLD : float = 0.7;
 
 var groundPlane : Plane;
 private var onGround = true;
@@ -27,12 +27,12 @@ function Update () {
 	// Jump key
 	var jumpVec = Vector3(0,0,0);
 	if( Input.GetButtonDown("Jump") && onGround ){
-		jumpVec = Vector3(0, JUMPSPEED , 0);
+		jumpVec = Vector3(0, JUMPSPEED, 0);
 		onGround = false;
 	}
 	
 	// Setting player velocity
-	rigidbody.velocity = Vector3(0,rigidbody.velocity.y,0) + Vector3.Normalize(inputVec) * SPEED + jumpVec;
+	rigidbody.velocity = Vector3(0, rigidbody.velocity.y, 0) + Vector3.Normalize(inputVec) * SPEED + jumpVec;
 }
 
 // Override collision stuff here
