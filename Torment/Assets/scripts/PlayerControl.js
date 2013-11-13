@@ -1,7 +1,7 @@
 ﻿#pragma strict
 
-static var SPEED : float = 8;
-static var JUMPSPEED : float = 6;
+static var SPEED : float = 1;
+static var JUMPSPEED : float = 5;
 static var SLOPE_THRESHOLD : float = 0.7;
 
 var groundPlane : Plane;
@@ -20,9 +20,15 @@ function Update () {
 		var hitPoint : Vector3 = mouseRay.GetPoint(hitDist);
 		transform.LookAt(Vector3(hitPoint.x, transform.position.y, hitPoint.z));
 	}
-	
+		
 	// Player movement
-	var inputVec = Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+	var inputVec = Vector3(0,0,0);
+	if( onGround ){
+		inputVec = Vector3.Normalize( Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) );
+	}
+	else{
+		inputVec = Vector3.Normalize( Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) ) * 0.1;
+	}
 	
 	// Jump key
 	var jumpVec = Vector3(0,0,0);
@@ -31,8 +37,17 @@ function Update () {
 		onGround = false;
 	}
 	
+	// Deceleration vector
+	var decelPercent = 0.1;
+	if( !onGround ){
+		decelPercent = 0.01;
+	}
+	var decelVec = Vector3(rigidbody.velocity.x,0,rigidbody.velocity.z) * decelPercent * -1 ;
+	
 	// Setting player velocity
-	rigidbody.velocity = Vector3(0, rigidbody.velocity.y, 0) + Vector3.Normalize(inputVec) * SPEED + jumpVec;
+	//rigidbody.velocity = stopVec + Vector3.Normalize(inputVec) * SPEED + jumpVec;
+	rigidbody.AddForce( inputVec * SPEED + decelVec + jumpVec , ForceMode.VelocityChange );
+
 }
 
 // Override collision stuff here
